@@ -304,6 +304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64bc1d32fcbf182428f7095dacee5879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  desiredRooms: 25
   roomPrefabs:
   - {fileID: 3114123209032506419, guid: a6d15a3450b8d6c40b3acb2c8bdd3acf, type: 3}
   - {fileID: 3209318816294505753, guid: 75639afadf6bd864db2e037e3c007760, type: 3}
@@ -320,6 +321,7 @@ MonoBehaviour:
   - {fileID: 2083302673700315906, guid: b7768bc5bb7d59049a8a99063258cb10, type: 3}
   - {fileID: 4972987417743828489, guid: ca59d9075fb5ec643802afeccd2f9c7b, type: 3}
   - {fileID: 6945663400912602891, guid: 6e59734160849e240bfd2afeea321d50, type: 3}
+  errorTimer: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

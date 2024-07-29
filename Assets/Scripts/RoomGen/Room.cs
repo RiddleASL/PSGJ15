@@ -17,6 +17,16 @@ public class Room : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void GetDoorObjs(){
         //* Doors
         Transform doorParent = transform.Find("Doors");
         foreach(Transform child in doorParent){
@@ -47,11 +57,5 @@ public class Room : MonoBehaviour
             door.AddComponent<Door>().dir = 3;
             doorObjs.Add(door);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -37,7 +37,6 @@ public class AbilityHolder : MonoBehaviour
     public void UsePrimaryAbility(InputAction.CallbackContext context)
     {
         if(!context.performed) return;
-        if(gameObject.GetComponent<PlayerMotor>().dashAttack) {pm.primaryAbilityDuration = 0; pm.dashAttack = false;}
         if(primaryCooldown > 0) return;
         Debug.Log("Primary Ability Used");
         primaryAbility.Activate(gameObject);

@@ -15,10 +15,10 @@ public class SwallowsDive : Ability
         gs = GameObject.FindGameObjectWithTag("Global").GetComponent<GlobalScript>();
         pm = parent.GetComponent<PlayerMotor>();
 
-        parent.GetComponent<PlayerMotor>().dashAttack = true;
-        parent.GetComponent<PlayerMotor>().setDashAttackDmg(dmg * pm.dmgMod);
-        parent.GetComponent<PlayerMotor>().setDashAttackKnockback(knockback * pm.knockbackMod);
-        parent.GetComponent<PlayerMotor>().setDashAttackSpeed(speed);
-        parent.GetComponent<PlayerMotor>().setPrimDurTime(duration);
+        pm.dashAttack = true;
+        pm.setDashAttackDmg(dmg * pm.dmgMod);
+        pm.setDashAttackKnockback(knockback * pm.knockbackMod);
+        pm.setDashAttackSpeed(speed);
+        pm.setPrimDurTime(duration);
     }
 }

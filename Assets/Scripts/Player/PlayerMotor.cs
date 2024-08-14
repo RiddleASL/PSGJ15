@@ -18,7 +18,7 @@ public class PlayerMotor : MonoBehaviour
 
     [Header("Basic Character Stats")]
     public float maxHealth = 10f;
-    float currHealth;
+    [HideInInspector] public float currHealth;
     public float speed = 10f;
     [HideInInspector] public float speedMod = 1f;
     public float kbResist = 3f;
@@ -93,13 +93,15 @@ public class PlayerMotor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Handle Functions
-        handleMovement();
-        handleAttackDirection();
-        handleBuffers();
-        handleFinalStats();
-        
-        if(dashAttack && primaryAbilityDuration > 0) DashAttack(attackDir, finalSpeed * dashAttackSpeed);
+        if(currHealth > 0){
+            //Handle Functions
+            handleMovement();
+            handleAttackDirection();
+            handleBuffers();
+            handleFinalStats();
+            
+            if(dashAttack && primaryAbilityDuration > 0) DashAttack(attackDir, finalSpeed * dashAttackSpeed);
+        }
     }
 
     public void Movement(InputAction.CallbackContext context)
@@ -149,6 +151,7 @@ public class PlayerMotor : MonoBehaviour
 
     IEnumerator DashCoroutine()
     {
+        rb.velocity = Vector2.zero;
         LayerMask dashMask = new LayerMask();
         if(flight) dashMask = LayerMask.GetMask("Default", "Obstacle");
         else dashMask = LayerMask.GetMask("Default", "TransparentFX", "Obstacle");

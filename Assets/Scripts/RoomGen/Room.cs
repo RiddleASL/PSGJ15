@@ -5,57 +5,42 @@ using UnityEngine;
 public class Room : MonoBehaviour
 {
     [System.Serializable]
-    public struct Doors{
+    public struct Doors
+    {
         public bool top, bottom, left, right;
     }
 
     [Header("Room Info")]
     public Doors doors;
     public List<GameObject> doorObjs;
-    
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetDoorObjs();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void GetDoorObjs(){
+    public void GetDoorObjs()
+    {
         //* Doors
+        doorObjs.Clear();
         Transform doorParent = transform.Find("Doors");
-        foreach(Transform child in doorParent){
-            child.gameObject.SetActive(false);
+        foreach (Transform child in doorParent)
+        {
+            doorObjs.Add(child.gameObject);
+            if (child.GetComponent<Door>() == null) child.gameObject.AddComponent<Door>();
         }
 
-        if(doors.top){
-            GameObject door = doorParent.GetChild(0).gameObject;
-            door.SetActive(true);
-            door.AddComponent<Door>().dir = 0;
-            doorObjs.Add(door);
-        }
-        if(doors.right){
-            GameObject door = doorParent.GetChild(1).gameObject;
-            door.SetActive(true);
-            door.AddComponent<Door>().dir = 1;
-            doorObjs.Add(door);
-        }
-        if(doors.bottom){
-            GameObject door = doorParent.GetChild(2).gameObject;
-            door.SetActive(true);
-            door.AddComponent<Door>().dir = 2;
-            doorObjs.Add(door);
-        }
-        if(doors.left){
-            GameObject door = doorParent.GetChild(3).gameObject;
-            door.SetActive(true);
-            door.AddComponent<Door>().dir = 3;
-            doorObjs.Add(door);
-        }
+        doorObjs[0].GetComponent<Door>().dir = 0;
+        doorObjs[1].GetComponent<Door>().dir = 1;
+        doorObjs[2].GetComponent<Door>().dir = 2;
+        doorObjs[3].GetComponent<Door>().dir = 3;
     }
 }

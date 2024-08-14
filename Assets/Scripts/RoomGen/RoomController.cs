@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomController : MonoBehaviour
 {
     [Header("Generation Info")]
     public int desiredRooms = 10;
+    public int seedInt;
+
+    public Color bgCol;
     int currentRooms;
 
     [Header("Room Prefabs")]
     public GameObject[] roomPrefabs;
-    int roomSize = 20;
+    public int roomSize = 20;
     bool redundantDoors = false;
     List<GameObject> spawnedRooms = new List<GameObject>();
     List<GameObject> finishedRooms = new List<GameObject>();
@@ -25,6 +28,10 @@ public class RoomController : MonoBehaviour
     {
         //Generate Start Room
         startRoom();
+        if(seedInt == 0){
+            seedInt = Random.Range(0, 1000000);
+        }
+        Random.InitState(seedInt);
     }
 
     // Update is called once per frame
@@ -40,9 +47,13 @@ public class RoomController : MonoBehaviour
         if(currentRooms < desiredRooms){
             GenerateRoom();
         } else if(!redundantDoors){
+            finishedRooms.AddRange(fullRooms);
             finishedRooms.AddRange(spawnedRooms);
+            spawnedRooms.Clear();
+            fullRooms.Clear();
+
             doorsOccupied();
-            removeUnconnectedDoors();
+
             redundantDoors = true;
         }
     }
@@ -103,33 +114,23 @@ public class RoomController : MonoBehaviour
 
     void AddRoom(Vector3 spawnPos, int fromDir){
         List<GameObject> possibleRooms = new List<GameObject>();
-        int availableSpaces = CalcSpaces(spawnPos);
 
         foreach(GameObject room in roomPrefabs){
             Room r = room.GetComponent<Room>();
-            int doors = 0;
-            if(r.doors.top) doors++;
-            if(r.doors.right) doors++;
-            if(r.doors.bottom) doors++;
-            if(r.doors.left) doors++;
+            r.GetDoorObjs();
+            
+            //possible directions
+            List<int> possibleDirs = new List<int>();
+            if(r.doors.top) possibleDirs.Add(0);
+            if(r.doors.right) possibleDirs.Add(1);
+            if(r.doors.bottom) possibleDirs.Add(2);
+            if(r.doors.left) possibleDirs.Add(3);
 
-            if(doors > availableSpaces){
-                continue;
-            }
-
-            bool top = r.doors.top;
-            bool right = r.doors.right;
-            bool bottom = r.doors.bottom;
-            bool left = r.doors.left;
-
-            if(fromDir == 0 && bottom){
-                possibleRooms.Add(room);
-            } else if(fromDir == 1 && left){
-                possibleRooms.Add(room);
-            } else if(fromDir == 2 && top){
-                possibleRooms.Add(room);
-            } else if(fromDir == 3 && right){
-                possibleRooms.Add(room);
+            foreach(GameObject door in r.doorObjs){
+                Door d = door.GetComponent<Door>();
+                if(d.dir == (fromDir + 2) % 4){
+                    possibleRooms.Add(room);
+                }
             }
         }
 
@@ -213,6 +214,7 @@ public class RoomController : MonoBehaviour
     void doorsOccupied(){
         foreach(GameObject room in finishedRooms){
             Room r = room.GetComponent<Room>();
+
             foreach(GameObject door in r.doorObjs){
                 Door d = door.GetComponent<Door>();
                 Vector2 checkPos = Vector2.zero;
@@ -232,12 +234,13 @@ public class RoomController : MonoBehaviour
                         break;
                 }
 
-                GameObject testRoom = spawnedRooms.Find(x => (Vector2)x.transform.position == checkPos);
-                if(testRoom != null){
+                GameObject testRoom = finishedRooms.Find(x => (Vector2)x.transform.position == checkPos);
+                if(checkPos != Vector2.zero && testRoom != null){
                     Room testR = testRoom.GetComponent<Room>();
                     foreach(GameObject testDoor in testR.doorObjs){
                         Door testD = testDoor.GetComponent<Door>();
                         if(testD.dir == (d.dir + 2) % 4){
+                            d.isOccupied = true;
                             testD.isOccupied = true;
                         }
                     }
@@ -245,6 +248,7 @@ public class RoomController : MonoBehaviour
                 }
             }
         }
+        removeUnconnectedDoors();
     }
 
     void removeUnconnectedDoors(){
@@ -253,7 +257,8 @@ public class RoomController : MonoBehaviour
             foreach(GameObject door in r.doorObjs){
                 Door d = door.GetComponent<Door>();
                 if(!d.isOccupied){
-                    d.gameObject.SetActive(false);
+                    d.GetComponent<SpriteRenderer>().enabled = false;
+                    d.AddComponent<BoxCollider2D>();
                 }
             }
         }

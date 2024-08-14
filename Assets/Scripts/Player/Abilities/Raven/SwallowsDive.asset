@@ -16,7 +16,7 @@ MonoBehaviour:
   gs: {fileID: 0}
   name: 
   cooldown: 5
-  duration: 5
+  duration: 10
   dmg: 4.5
   knockback: 25
   speed: 1.3
